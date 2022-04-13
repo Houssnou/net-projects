@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entitites
+namespace Core.Entities
 {
-    internal class Employee
+    public abstract class BaseEntity
     {
+        public int Id { get; set; }
     }
 }
