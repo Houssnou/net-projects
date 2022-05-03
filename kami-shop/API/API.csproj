@@ -11,13 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Helpers\" />
-    <Folder Include="Middleware\" />
     <Folder Include="Dtos\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Insfrastructure\Insfrastructure.csproj" />
+    <Folder Include="Helpers\" />
   </ItemGroup>
 
 </Project>
