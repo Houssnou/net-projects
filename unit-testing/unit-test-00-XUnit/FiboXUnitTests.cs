@@ -1,4 +1,7 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using unit_testing_00;
+using Xunit;
 
 namespace unit_test_00_XUnit
 {
@@ -6,13 +9,12 @@ namespace unit_test_00_XUnit
     {
         private Fibo fibo;
 
-        [SetUp]
-        public void SetUp()
+        public FiboXUnitTests()
         {
             fibo = new();
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnNotEmptyOrdederedList_ForInput1()
         {
             //Arrange
@@ -23,12 +25,13 @@ namespace unit_test_00_XUnit
             var result = fibo.GetFiboSeries();
 
             //Assert
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result, Is.Ordered);
-            Assert.That(result, Is.EquivalentTo(expected));
+            Assert.NotEmpty(result);
+            Assert.Equal(expected.OrderBy(x => x), result);
+            Assert.Equal(expected, result);
+            Assert.True(result.SequenceEqual(expected));
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnNotEmptyList_ForInput6()
         {
             //Arrange
@@ -37,14 +40,15 @@ namespace unit_test_00_XUnit
             int expectedCount = 6;
 
             //Act
-            var result = fibo.GetFiboSeries(); 
-
-            //Assert
-            Assert.That(result, Does.Contain(3));
-            Assert.That(result.Count, Is.EqualTo(result.Count));
-            Assert.That(result.Count, Is.EqualTo(6));
-            Assert.That(result, Does.Not.Contain(4));
-            Assert.That(result, Is.EquivalentTo(expected));
+            var result = fibo.GetFiboSeries();
+            
+            Assert.Contains(3, result);
+            Assert.Equal(expectedCount, result.Count);
+            Assert.NotEmpty(result);
+            Assert.DoesNotContain(4, result);
+            Assert.NotEmpty(result);
+            Assert.Equal(expected.OrderBy(x => x), result);
+            Assert.Equal(expected, result);
         }
     }
 }

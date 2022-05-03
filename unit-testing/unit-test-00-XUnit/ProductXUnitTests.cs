@@ -1,20 +1,22 @@
 ﻿using Moq;
+using unit_testing_00;
+using Xunit;
 
-namespace unit_test_00_XUnit
+namespace unit_Fact_00_XUnit
 {
-    [TestFixture]
-    public class ProductXUnitTests
+   public class ProductXUnitFacts
     {
-        [Test]
+        [Fact]
         public void ShouldReturnPriceWithDiscountForPlatinumCustomer()
         {
             Product product = new() { Price = 50 };
 
             var result = product.GetPrice(new Customer() { IsPlatinum = true });
 
-            Assert.That(result, Is.EqualTo(40));
+            Assert.Equal(40, result);
         }
-        [Test]
+
+        [Fact]
         public void ShouldReturnPriceWithDiscountForPlatinumCustomer_WithMock()
         {
             Product product = new() { Price = 50 };
@@ -24,7 +26,7 @@ namespace unit_test_00_XUnit
 
             var result = product.GetPrice(customer.Object);
 
-            Assert.That(result, Is.EqualTo(40));
+            Assert.Equal(40, result);
         }
     }
 }

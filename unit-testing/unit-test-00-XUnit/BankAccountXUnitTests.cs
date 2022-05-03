@@ -4,62 +4,53 @@ using Xunit;
 
 namespace unit_test_00_XUnit
 {
-    [TestFixture]
     public class BankAccountXUnitTests
     {
-        private BankAccount bankAccount;
-
-        [SetUp]
-        public void SetUp()
+        [Fact]
+        public void ShouldReturnTrueForDeposit()
         {
+            // BankAccount bankAccountWithActualWithDependency = new(new LogBook());
+            BankAccount bankAccountWithFaker = new(new LogFaker());
 
+            var actual = bankAccountWithFaker.Deposit(100);
+
+            Assert.True(actual);
+            Assert.Equal(100, bankAccountWithFaker.GetBalance());
         }
 
-        //[Test]
-        //public void ShouldReturnTrueForDeposit()
-        //{
-        //    // BankAccount bankAccountWithActualWithDependency = new(new LogBook());
-        //    BankAccount bankAccountWithFaker = new(new LogFaker());
-
-        //    var result = bankAccountWithFaker.Deposit(100);
-
-        //    Assert.True(result);
-        //    Assert.That(bankAccountWithFaker.GetBalance(), Is.EqualTo(100));
-        //}
-
-        [Test]
+        [Fact]
         public void ShouldReturnTrueForDepositWithMock()
         {
             var logMock = new Mock<ILogBook>();
 
             BankAccount bankAccountWithMock = new(logMock.Object);
 
-            var result = bankAccountWithMock.Deposit(100);
+            var actual = bankAccountWithMock.Deposit(100);
 
-            Assert.True(result);
-            Assert.That(bankAccountWithMock.GetBalance(), Is.EqualTo(100));
+            Assert.True(actual);
+            Assert.Equal(100, bankAccountWithMock.GetBalance());
         }
 
-        //[Test]
-        //public void ShouldReturnTrueFor100WithdramWith200Balance()
-        //{
-        //    var logMock = new Mock<ILogBook>();
-        //    logMock.Setup(u => u.LogToDb(It.IsAny<string>())).Returns(true);
-        //    logMock.Setup(u => u.LogBalanceAfterWithdrawal(It.IsAny<decimal>())).Returns(true);
+        [Fact]
+        public void ShouldReturnTrueFor100WithdramWith200Balance()
+        {
+            var logMock = new Mock<ILogBook>();
+            logMock.Setup(u => u.LogToDb(It.IsAny<string>())).Returns(true);
+            logMock.Setup(u => u.LogBalanceAfterWithdrawal(It.IsAny<decimal>())).Returns(true);
 
-        //    BankAccount bankAccount = new(logMock.Object);
-        //    bankAccount.Deposit(200);
+            BankAccount bankAccount = new(logMock.Object);
+            bankAccount.Deposit(200);
 
-        //    var result = bankAccount.Withdrawn(300);
+            var actual = bankAccount.Withdrawn(300);
 
-        //    Assert.IsTrue(result);
+            Assert.True(actual);
 
-        //}
+        }
 
-        [Test]
-        [TestCase(200, 100)]
-        [TestCase(200, 150)]
-        public void ShouldReturnTrueFor100WithdramWith200Balance(decimal balance, decimal withdraw)
+        [Theory]
+        [InlineData(200, 100)]
+        [InlineData(200, 150)]
+        public void ShouldReturnTrueFor100WithdramWith200Balance_Theory(decimal balance, decimal withdraw)
         {
             var logMock = new Mock<ILogBook>();
             logMock.Setup(u => u.LogToDb(It.IsAny<string>())).Returns(true);
@@ -68,16 +59,15 @@ namespace unit_test_00_XUnit
             BankAccount bankAccount = new(logMock.Object);
             bankAccount.Deposit(balance);
 
-            var result = bankAccount.Withdrawn(withdraw);
+            var actual = bankAccount.Withdrawn(withdraw);
 
-            Assert.IsTrue(result);
-
+            Assert.True(actual);
         }
 
-        [Test]
-        [TestCase(200, 300)]
-        [TestCase(200, 350)]
-        public void ShouldReturnTrueFor300WithdramWith200Balance(decimal balance, decimal withdraw)
+        [Theory]
+        [InlineData(200, 300)]
+        [InlineData(200, 350)]
+        public void ShouldReturnFalseFor300WithdrawWith200Balance(decimal balance, decimal withdraw)
         {
             var logMock = new Mock<ILogBook>();
             logMock.Setup(u => u.LogToDb(It.IsAny<string>())).Returns(true);
@@ -88,12 +78,12 @@ namespace unit_test_00_XUnit
             BankAccount bankAccount = new(logMock.Object);
             bankAccount.Deposit(balance);
 
-            var result = bankAccount.Withdrawn(withdraw);
+            var actual = bankAccount.Withdrawn(withdraw);
 
-            Assert.IsFalse(result);
+            Assert.False(actual);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnMessage()
         {
             var logMock = new Mock<ILogBook>();
@@ -101,25 +91,25 @@ namespace unit_test_00_XUnit
 
 
             var expectedOutpout = "hello";
-            var result = logMock.Object.LogWithStringReturn("HeLlo");
+            var actual = logMock.Object.LogWithStringReturn("HeLlo");
 
-            Assert.That(result, Is.EqualTo(expectedOutpout));
+            Assert.Equal(expectedOutpout, actual);
         }
 
-        [Test]
+        [Fact]
         public void ShouldTrueWithOutputMessage()
         {
             var logMock = new Mock<ILogBook>();
             var expectedOutpout = "hello";
             logMock.Setup(x => x.LogWithBooleanOutputResult(It.IsAny<string>(), out expectedOutpout)).Returns(true);
 
-            var result = "";
+            var actual = "";
 
-            Assert.IsTrue(logMock.Object.LogWithBooleanOutputResult("John", out result));
-            Assert.That(result, Is.EqualTo(expectedOutpout));
+            Assert.True(logMock.Object.LogWithBooleanOutputResult("John", out actual));
+            Assert.Equal(expectedOutpout, actual);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnTrueForRefObject()
         {
             var logMock = new Mock<ILogBook>();
@@ -129,11 +119,11 @@ namespace unit_test_00_XUnit
 
             logMock.Setup(u => u.LogWithRefObject(ref customer)).Returns(true);
 
-            Assert.IsTrue(logMock.Object.LogWithRefObject(ref customer));
-            Assert.IsFalse(logMock.Object.LogWithRefObject(ref customerNotUsed));
+            Assert.True(logMock.Object.LogWithRefObject(ref customer));
+            Assert.False(logMock.Object.LogWithRefObject(ref customerNotUsed));
         }
 
-        [Test]
+        [Fact]
         public void ShouldSetLogTypeAndSeverity()
         {
             var logMock = new Mock<ILogBook>();
@@ -144,27 +134,26 @@ namespace unit_test_00_XUnit
             //logMock.Object.LogSeverity = 100;
 
             //Assert.That(logMock.Object.LogSeverity, Is.EqualTo(100));
-            Assert.That(logMock.Object.LogSeverity, Is.EqualTo(10));
-            Assert.That(logMock.Object.LogType, Is.EqualTo("Warning"));
+            Assert.Equal(10, logMock.Object.LogSeverity);
+            Assert.Equal("Warning", logMock.Object.LogType);
         }
 
-        [Test]
+        [Fact]
         public void ShouldSetLogTypeAndSeverityWithCallback()
         {
             var logMock = new Mock<ILogBook>();
             logMock.Setup(x => x.LogSeverity).Returns(10);
             logMock.Setup(x => x.LogType).Returns("Warning");
 
-            Assert.That(logMock.Object.LogSeverity, Is.EqualTo(10));
-            Assert.That(logMock.Object.LogType, Is.EqualTo("Warning"));
-
+            Assert.Equal(10, logMock.Object.LogSeverity);
+            Assert.Equal("Warning", logMock.Object.LogType);
             //callbacks
             string logTemp = "Hello, ";
             logMock.Setup(u => u.LogToDb(It.IsAny<string>())).Returns(true).Callback((string str) => logTemp += str);
 
             logMock.Object.LogToDb("John");
 
-            Assert.That(logTemp, Is.EqualTo("Hello, John"));
+            Assert.Equal("Hello, John", logTemp);
 
             //callbacks
             int counter = 5;
@@ -173,7 +162,7 @@ namespace unit_test_00_XUnit
             logMock.Object.LogToDb("John");
             logMock.Object.LogToDb("John");
 
-            Assert.That(counter, Is.EqualTo(7));
+            Assert.Equal(7, counter);
 
             //callbacks
             int beforeAndAfterCounter = 5;
@@ -182,10 +171,10 @@ namespace unit_test_00_XUnit
             logMock.Object.LogToDb("John");
             logMock.Object.LogToDb("John");
 
-            Assert.That(beforeAndAfterCounter, Is.EqualTo(9));
+            Assert.Equal(9, beforeAndAfterCounter);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnHowManyTimesAMethodWasInvoked()
         {
             var logMock = new Mock<ILogBook>();
@@ -193,13 +182,13 @@ namespace unit_test_00_XUnit
             BankAccount bankAccount = new(logMock.Object);
             bankAccount.Deposit(100);
 
-            Assert.That(bankAccount.GetBalance(), Is.EqualTo(100));
+            Assert.Equal(100, bankAccount.GetBalance());
 
             logMock.Verify(x => x.Message(It.IsAny<string>()), Times.Exactly(2));
             logMock.Verify(x => x.Message("Test"), Times.AtLeastOnce);
             // logMock.Verify(x => x.LogSeverity, Times.Once);
             logMock.VerifySet(x => x.LogSeverity = 100, Times.Once);
-            logMock.VerifyGet(x => x.LogSeverity , Times.Once);
+            logMock.VerifyGet(x => x.LogSeverity, Times.Once);
         }
     }
 }

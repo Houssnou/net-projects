@@ -1,17 +1,18 @@
-﻿namespace unit_test_00_XUnit
+﻿using unit_testing_00;
+using Xunit;
+
+namespace unit_test_00_XUnit
 {
 
     public class GradingCalculatorXUnitTests
     {
         private GradingCalculator gradingCalculator;
 
-        [SetUp]
-        public void SetUp()
+        public GradingCalculatorXUnitTests()
         {
             gradingCalculator = new();
         }
-
-        [Test]
+        [Fact]
         public void ShouldReturnGradeA()
         {
             //Arrange
@@ -22,10 +23,10 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            Assert.That(grade, Is.EqualTo("A"));
+            Assert.Equal("A", grade);
         }
 
-        [Test]
+        [Fact]
         public void ShoudReturnGradeB()
         {
             //Arrange
@@ -36,10 +37,10 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            Assert.That(grade, Is.EqualTo("B"));
+            Assert.Equal("B", grade);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnGradeC()
         {
             //Arrange
@@ -50,10 +51,10 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            Assert.That(grade, Is.EqualTo("C"));
+            Assert.Equal("C", grade);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnB_ForInputs()
         {
             //Arrange
@@ -64,14 +65,14 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            Assert.That(grade, Is.EqualTo("B"));
+            Assert.Equal("B", grade);
         }
 
-        [Test]
-        [TestCase(95, 55)]
-        [TestCase(65, 55)]
-        [TestCase(50, 90)]
-        public void ShouldReturnFGradeForMultipleInputs(int score, int attendance)
+        [Theory]
+        [InlineData(95, 55, "F")]
+        [InlineData(65, 55, "F")]
+        [InlineData(50, 90, "F")]
+        public void ShouldReturnFGradeForMultipleInputs(int score, int attendance, string expectedGrade)
         {
             //Arrange
             gradingCalculator.Score = score;
@@ -81,21 +82,19 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            Assert.That(grade, Is.EqualTo("F"));
+            Assert.Equal(expectedGrade, grade);
         }
 
+        [Theory]
+        [InlineData(95, 90, "A")]
+        [InlineData(85, 90, "B")]
+        [InlineData(65, 90, "C")]
+        [InlineData(95, 65, "B")]
 
-        
-        [Test]
-        [TestCase(95, 90, ExpectedResult = "A")]
-        [TestCase(85, 90, ExpectedResult = "B")]
-        [TestCase(65, 90, ExpectedResult = "C")]
-        [TestCase(95, 65, ExpectedResult = "B")]
-
-        [TestCase(95, 55, ExpectedResult = "F")]
-        [TestCase(65, 55, ExpectedResult = "F")]
-        [TestCase(50, 90, ExpectedResult = "F")]
-        public string ShouldReturnValidGradesForMultipleInputs(int score, int attendance)
+        [InlineData(95, 55, "F")]
+        [InlineData(65, 55, "F")]
+        [InlineData(50, 90, "F")]
+        public void ShouldReturnValidGradesForMultipleInputs(int score, int attendance, string expectedGrade)
         {
             //Arrange
             gradingCalculator.Score = score;
@@ -105,9 +104,7 @@
             var grade = gradingCalculator.GetGrade();
 
             //Assert
-            return grade;
+            Assert.Equal(expectedGrade, grade);
         }
-
-
     }
 }

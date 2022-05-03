@@ -1,46 +1,46 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using unit_testing_00;
+using Xunit;
 
 namespace unit_test_00_XUnit
 {
-    [TestFixture]
     public class CalculatorXUnitTests
     {
         public Calculator calculator;
-        [SetUp]
-        public void SetUp()
+
+        public CalculatorXUnitTests()
         {
             calculator = new();
         }
 
-        [Test]
+        [Fact]
         public void ShouldAddTwoNumbers()
         {
             //Arrange
-            //Calculator calculator = new();
-
             //Act
             int result = calculator.Add(10, 20);
 
             //Assert
-            Assert.AreEqual(30, result);
+            Assert.Equal(30, result);
         }
 
-        [Test]
-        [TestCase(5.4, 10.5)] //15.9
-        [TestCase(5.43, 10.53)] //15.96
+        [Theory]
+        [InlineData(5.4, 10.5)] //15.9
+        [InlineData(5.43, 10.53)] //15.96
         public void ShouldAddTwoDoublesNumber(double a, double b)
         {
             //Arrange
-            Calculator calculator = new Calculator();
+            //Calculator calculator = new Calculator();
 
             //Act
             double result = calculator.Add(a, b);
 
             //Assert
-            Assert.AreEqual(15.9, result, 1);
+            Assert.Equal(15.9, result, 0);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnTrueForOddNumber()
         {
             //Arrange
@@ -48,9 +48,9 @@ namespace unit_test_00_XUnit
             //Act
             bool result = calculator.IsOddNumber(3);
             //Assert
-            Assert.IsTrue(result);
+            Assert.True(result);
         }
-        [Test]
+        [Fact]
         public void ShouldReturnFalseForOddNumber()
         {
             //Arrange
@@ -58,11 +58,11 @@ namespace unit_test_00_XUnit
             //Act
             bool result = calculator.IsOddNumber(2);
             //Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
-        [Test]
-        //[TestCase(11)]
-        [TestCase(12)]
+        [Theory]
+        //[InlineData(11)]
+        [InlineData(12)]
         public void ShouldReturnFalseForInputOddNumber(int a)
         {
             //Arrange
@@ -70,13 +70,13 @@ namespace unit_test_00_XUnit
             //Act
             bool result = calculator.IsOddNumber(a);
             //Assert
-            Assert.IsFalse(result);
+            Assert.False(result);
         }
 
-        [Test]
-        [TestCase(11, ExpectedResult = true)]
-        [TestCase(12, ExpectedResult = false)]
-        public bool ShouldReturnFalseForInputOddNumber_WithExpectedResult(int a)
+        [Theory]
+        [InlineData(11, true)]
+        [InlineData(12, false)]
+        public void ShouldReturnFalseForInputOddNumber_WithExpectedResult(int a, bool expectedResult)
         {
             //Arrange
             //Calculator calculator = new();
@@ -85,10 +85,10 @@ namespace unit_test_00_XUnit
             bool result = calculator.IsOddNumber(a);
 
             //Assert
-            return result;
+            Assert.Equal(expectedResult, result);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnValidOddNumbersWithinMinAndMax()
         {
             //Arrange
@@ -98,14 +98,12 @@ namespace unit_test_00_XUnit
             List<int> result = calculator.GetOddRange(5, 10);
 
             //Assert
-            Assert.That(result, Is.EquivalentTo(expected));
-            Assert.AreEqual(expected, result);
+            Assert.Equal(expected, result);
             Assert.Contains(7, result);
-            Assert.That(result, Does.Contain(7));
-            Assert.That(result, Is.Not.Empty);
-            Assert.That(result, Has.No.Member(6));
-            Assert.That(result, Is.Ordered);
-            Assert.That(result, Is.Unique);
+            Assert.NotEmpty(result);
+            Assert.Equal(3, result.Count);
+            Assert.DoesNotContain(6,result);
+            Assert.Equal(result.OrderBy(u=>u), result);
         }
     }
 }

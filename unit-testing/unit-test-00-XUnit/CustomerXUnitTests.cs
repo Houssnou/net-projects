@@ -1,83 +1,78 @@
 ﻿using System;
+using unit_testing_00;
+using Xunit;
 
-namespace unit_test_00_XUnit
+namespace unit_Fact_00_XUnit
 {
-    public class CustomerXUnitTests
+    public class CustomerXUnitFacts
     {
         private Customer customer;
 
-        [SetUp]
-        public void SetUp()
+        public CustomerXUnitFacts()
         {
-            customer = new Customer();
+            customer = new();
         }
-        [Test]
+        [Fact]
         public void ShouldReturnCustomerFullName()
         {
-            //using SetUp instead of repeating Class initialization in each test
+            //using SetUp instead of repeating Class initialization in each Fact
             ////Arrange
-            //Customer customer = new(); 
-
-
+            //_customer _customer = new(); 
 
             //Act
             string fullName = customer.GetFullName("John", "Doe");
 
             //Assert
-            Assert.That(fullName, Is.EqualTo("Hello, John Doe"));
-            Assert.That(fullName, Does.Contain("John"));
-            Assert.That(fullName, Does.StartWith("Hello"));
-            Assert.That(fullName, Does.EndWith("Doe"));
+            Assert.Equal("Hello, John Doe", fullName);
+            Assert.Contains("John", fullName);
+            Assert.StartsWith("Hello", fullName);
+            Assert.EndsWith("Doe", fullName);
 
-            Assert.AreEqual("Hello, John Doe", fullName);
+            Assert.Equal("Hello, John Doe", fullName);
 
-            Assert.That(fullName, Does.Match("Hello, [A-Z]{1}[a-z]+ "));
+            Assert.Matches("Hello, [A-Z]{1}[a-z]+ ", fullName);
         }
 
-        [Test]
-        public void ShouldReturnCustomerFullNameWithMultipleAssert()
-        {
-            //Act
-            string fullName = customer.GetFullName("John", "Doe");
+        //[Fact]
+        //public void ShouldReturnCustomerFullNameWithMultipleAssert()
+        //{
+        //    //Act
+        //    string fullName = _customer.GetFullName("John", "Doe");
 
-            //Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(fullName, Is.EqualTo("Hello, John Doe"));
-                Assert.That(fullName, Does.Contain("John"));
-                Assert.That(fullName, Does.StartWith("Hello"));
-                Assert.That(fullName, Does.EndWith("Doe"));
+        //    //Assert 
+        //    //Multiple asserts only available in 2.4.2 preview
+        //    Assert.Multiple(
+        //        () => Assert.Equal("Hello, John Doe", fullName),
+        //        () => Assert.Contains("John", fullName),
+        //        () => Assert.StartsWith("Hello", fullName),
+        //        () => Assert.EndsWith("Doe", fullName),
 
-                Assert.AreEqual("Hello, John Doe", fullName);
+        //        () => Assert.Equal("Hello, John Doe", fullName),
 
-                Assert.That(fullName, Does.Match("Hello, [A-Z]{1}[a-z]+ "));
-            });
-        }
+        //        () => Assert.Matches("Hello, [A-Z]{1}[a-z]+ ", fullName)
+        //    );
+        //}
 
-        [Test]
+        [Fact]
         public void ShouldReturnNull()
         {
-            //using SetUp instead of repeating Class initialization in each test
-            ////Arrange
-            //Customer customer = new();
-
             //Act
 
             //Arrange
-            Assert.IsNull(customer.GreetMessage);
+            Assert.Null(customer.GreetMessage);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnValidDiscount()
         {
             //Act
-            int result = customer.Discount;
+            int actual = customer.Discount;
 
             //Assert
-            Assert.That(result, Is.InRange(10, 25));
+            Assert.InRange(actual, 10, 25);
         }
 
-        [Test]
+        [Fact]
         public void ShouldThrowFisrtNameNullExceptionWithMesage()
         {
             var exception = Assert.Throws<ArgumentException>(() =>
@@ -85,42 +80,29 @@ namespace unit_test_00_XUnit
                 customer.GetFullName("", "Doe");
             });
 
-            Assert.AreEqual("Empty First Name", exception?.Message);
+            Assert.Equal("Empty First Name", exception?.Message);
 
-            Assert.That(() => customer.GetFullName("", "Doe"), Throws.ArgumentException.With.Message.EqualTo("Empty First Name"));
+            Assert.Throws<ArgumentException>(() => customer.GetFullName("", "Doe"));
         }
 
-        [Test]
-        public void ShouldThrowFirstNameArgumentException()
-        {
-            var exepection = Assert.Throws<ArgumentException>(() =>
-            {
-                customer.GetFullName("", "Doe");
-            });
-
-            Assert.That(() => customer.GetFullName("", "Doe"), Throws.ArgumentException);
-        }
-
-        [Test]
+        [Fact]
         public void ShouldReturnCustomerTypeForOrderTotalLessThan100()
         {
             customer.OrderTotal = 80;
 
-            var result = customer.GetCustomerDetails();
+            var actual = customer.GetCustomerDetails();
 
-            Assert.That(result, Is.TypeOf<BasicCustomer>());
+            Assert.IsType<BasicCustomer>(actual);
         }
 
-        [Test]
+        [Fact]
         public void ShouldReturnCustomerTypeForOrderTotalMoreThan100()
         {
             customer.OrderTotal = 120;
 
-            var result = customer.GetCustomerDetails();
+            var actual = customer.GetCustomerDetails();
 
-            Assert.That(result, Is.TypeOf<PlatinumCustomer>());
+            Assert.IsType<PlatinumCustomer>(actual);
         }
-
-
     }
 }
